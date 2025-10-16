@@ -1,0 +1,1 @@
+O objetivo dessa tarefa é treinar os modelos ARTMAP, fusionART, fuzzyART, e fuzzyARTMAP com bases de dados simples visando entender melhor seus funcinamentos.
