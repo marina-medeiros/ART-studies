@@ -1,6 +1,5 @@
-from artlib import FuzzyART, FuzzyARTMAP, FusionART
-from sklearn.metrics import classification_report, adjusted_rand_score, confusion_matrix, ConfusionMatrixDisplay
-import matplotlib.pyplot as plt
+from artlib import FuzzyART
+from sklearn.metrics import adjusted_rand_score
 import numpy as np
 import torch
 

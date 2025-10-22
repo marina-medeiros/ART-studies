@@ -1,9 +1,3 @@
-from artlib import FuzzyART, FuzzyARTMAP, FusionART
-from sklearn.metrics import classification_report, adjusted_rand_score, confusion_matrix, ConfusionMatrixDisplay
-import matplotlib.pyplot as plt
-import numpy as np
-import torch
-  
 def average_accuracy(num_tasks, acc_matrix):
   denominator = num_tasks*(num_tasks+1)/2
   acc_sum = 0
