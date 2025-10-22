@@ -1,11 +1,14 @@
 from artlib import FuzzyART, FuzzyARTMAP, FusionART
-from sklearn.metrics import classification_report, adjusted_rand_score, confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import classification_report, adjusted_rand_score, confusion_matrix, ConfusionMatrixDisplay, accuracy_score
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
 # # Os limites são calculados de forma diferente quando se trata de imagens
-# def train_fuzzyART_images(X_train_subset, y_train_subset, X_test_subset, y_test_subset, n_dim):
+def train_fuzzyARTMAP_images(X_train_subset, y_train_subset, X_test_subset, y_test_subset, n_dim):
+    return 0
+
+# def train_fuzzyARTMAP_images(X_train_subset, y_train_subset, X_test_subset, y_test_subset, n_dim):
 #     fuzzy_art_model = FuzzyART(rho=0.3, alpha=0.0, beta=1.0)
 
 #     lower_bounds = np.zeros(n_dim)
@@ -20,21 +23,23 @@ import torch
 
 #     return adjusted_rand_score(y_test_subset,fuzzy_art_predictions)
 
-def train_fuzzyART(X_train_subset, y_train_subset, X_test_subset, y_test_subset):
+def train_fuzzyARTMAP(X_train_subset, y_train_subset, X_test_subset, y_test_subset):
     fuzzy_artmap_model = FuzzyARTMAP(rho=0.3, alpha=0.0, beta=1.0)
 
-    lower_bound, upper_bound = (fuzzy_artmap_model.module_a).find_data_bounds(X)
+    X_combined = np.concatenate([X_train_subset, X_test_subset], axis=0)
+    lower_bound, upper_bound = fuzzy_artmap_model.find_data_bounds(X_combined)
     fuzzy_artmap_model.module_a.set_data_bounds(lower_bound, upper_bound)
 
-    train_X_fuzzy_art = fuzzy_artmap_model.prepare_data(X_train_subset)
-    test_X_fuzzy_art  = fuzzy_artmap_model.prepare_data(X_test_subset)
+    train_X_fuzzy_artmap = fuzzy_artmap_model.prepare_data(X_train_subset)
+    test_X_fuzzy_artmap  = fuzzy_artmap_model.prepare_data(X_test_subset)
 
-    fuzzy_artmap_model.fit(train_X_fuzzy_art)
-    fuzzy_art_predictions = fuzzy_artmap_model.predict(test_X_fuzzy_art)
+    fuzzy_artmap_model.fit(train_X_fuzzy_artmap)
+    fuzzy_artmap_predictions = fuzzy_artmap_model.predict(test_X_fuzzy_artmap)
 
-    return adjusted_rand_score(y_test_subset,fuzzy_art_predictions)
+    return accuracy_score(y_test_subset,fuzzy_artmap_predictions)
 
-def generate_acc_matrix_fuzzyART(num_tasks, X_train_sorted, y_train_sorted, X_test_sorted, y_test_sorted, images):
+
+def generate_acc_matrix_fuzzyARTMAP(num_tasks, X_train_sorted, y_train_sorted, X_test_sorted, y_test_sorted, images):
   train_subsets = []
   test_subsets = []
 
@@ -60,14 +65,14 @@ def generate_acc_matrix_fuzzyART(num_tasks, X_train_sorted, y_train_sorted, X_te
         test_subsets.append((X_test_subset, y_test_subset))
 
         if(images):
-            acc_matrix[i][j] = train_fuzzyART_images(
+            acc_matrix[i][j] = train_fuzzyARTMAP_images(
                                 X_train_subset,
                                 y_train_subset,  # não é usado na função
                                 X_test_subset,
                                 y_test_subset, 
                                 16 * 16)
         else:
-            acc_matrix[i][j] = train_fuzzyART(
+            acc_matrix[i][j] = train_fuzzyARTMAP(
                                 X_train_subset,
                                 y_train_subset,  # não é usado na função
                                 X_test_subset,

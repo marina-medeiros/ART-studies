@@ -21,9 +21,6 @@ def train_fuzzyART_images(X_train_subset, y_train_subset, X_test_subset, y_test_
     return adjusted_rand_score(y_test_subset,fuzzy_art_predictions)
 
 
-
-
-
 def train_fuzzyART(X_train_subset, y_train_subset, X_test_subset, y_test_subset):
     fuzzy_art_model = FuzzyART(rho=0.3, alpha=0.0, beta=1.0)
 
@@ -38,11 +35,6 @@ def train_fuzzyART(X_train_subset, y_train_subset, X_test_subset, y_test_subset)
     fuzzy_art_predictions = fuzzy_art_model.predict(test_X_fuzzy_art)
 
     return adjusted_rand_score(y_test_subset,fuzzy_art_predictions)
-
-
-
-
-
 
 
 def generate_acc_matrix_fuzzyART(num_tasks, X_train_sorted, y_train_sorted, X_test_sorted, y_test_sorted, images):
