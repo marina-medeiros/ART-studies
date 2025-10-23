@@ -74,4 +74,5 @@ def generate_acc_matrix_fuzzyART(num_tasks, X_train_sorted, y_train_sorted, X_te
                                 y_train_subset,  # não é usado na função
                                 X_test_subset,
                                 y_test_subset)
+            
     return acc_matrix

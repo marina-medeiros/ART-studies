@@ -17,8 +17,8 @@ from .metricas_gerais import average_accuracy, forward_transfer, backward_transf
 # In this case, only 'say_hello' and '__version__' would be imported
 # if a user uses 'from my_package import *'
 __all__ = ["average_accuracy", "forward_transfer", "backward_transfer", 
-           "train_fuzzyARTMAP", "train_fuzzyARTMAP_images", "generate_acc_matrix_fuzzyARTMAP",
-           "train_fuzzyART", "train_fuzzyART_images", "generate_acc_matrix_fuzzyART"]
+           "generate_acc_matrix_fuzzyARTMAP",
+           "generate_acc_matrix_fuzzyART"]
 
 # 4. Execute code upon package import (e.g., for setup or logging)
 print(f"Initializing my_package version {__version__} by {__author__}")

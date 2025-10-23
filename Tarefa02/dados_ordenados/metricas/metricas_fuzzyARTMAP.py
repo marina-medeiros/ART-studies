@@ -5,22 +5,19 @@ import torch
 
 # # Os limites são calculados de forma diferente quando se trata de imagens
 def train_fuzzyARTMAP_images(X_train_subset, y_train_subset, X_test_subset, y_test_subset, n_dim):
-    return 0
+    fuzzy_artmap_model = FuzzyARTMAP(rho=0.3, alpha=0.0, beta=1.0)
 
-# def train_fuzzyARTMAP_images(X_train_subset, y_train_subset, X_test_subset, y_test_subset, n_dim):
-#     fuzzy_art_model = FuzzyART(rho=0.3, alpha=0.0, beta=1.0)
+    lower_bounds = np.zeros(n_dim)
+    upper_bounds = np.full(n_dim, 255.0)
+    fuzzy_artmap_model.module_a.set_data_bounds(lower_bounds, upper_bounds)
 
-#     lower_bounds = np.zeros(n_dim)
-#     upper_bounds = np.full(n_dim, 255.0)
-#     fuzzy_art_model.set_data_bounds(lower_bounds, upper_bounds)
+    train_X_fuzzy_artmap = fuzzy_artmap_model.prepare_data(X_train_subset)
+    test_X_fuzzy_artmap  = fuzzy_artmap_model.prepare_data(X_test_subset)
 
-#     train_X_fuzzy_art = fuzzy_art_model.prepare_data(X_train_subset)
-#     test_X_fuzzy_art  = fuzzy_art_model.prepare_data(X_test_subset)
+    fuzzy_artmap_model.fit(train_X_fuzzy_artmap)
+    fuzzy_artmap_predictions = fuzzy_artmap_model.predict(test_X_fuzzy_artmap)
 
-#     fuzzy_art_model.fit(train_X_fuzzy_art)
-#     fuzzy_art_predictions = fuzzy_art_model.predict(test_X_fuzzy_art)
-
-#     return adjusted_rand_score(y_test_subset,fuzzy_art_predictions)
+    return accuracy_score(y_test_subset,fuzzy_artmap_predictions)
 
 def train_fuzzyARTMAP(X_train_subset, y_train_subset, X_test_subset, y_test_subset):
     fuzzy_artmap_model = FuzzyARTMAP(rho=0.3, alpha=0.0, beta=1.0)
