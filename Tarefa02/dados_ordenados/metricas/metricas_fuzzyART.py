@@ -14,7 +14,7 @@ def train_fuzzyART_images(X_train_subset, y_train_subset, X_test_subset, y_test_
     train_X_fuzzy_art = fuzzy_art_model.prepare_data(X_train_subset)
     test_X_fuzzy_art  = fuzzy_art_model.prepare_data(X_test_subset)
 
-    fuzzy_art_model.fit(train_X_fuzzy_art)
+    fuzzy_art_model.partial_fit(train_X_fuzzy_art)
     fuzzy_art_predictions = fuzzy_art_model.predict(test_X_fuzzy_art)
 
     return adjusted_rand_score(y_test_subset,fuzzy_art_predictions)
@@ -30,7 +30,7 @@ def train_fuzzyART(X_train_subset, y_train_subset, X_test_subset, y_test_subset)
     train_X_fuzzy_art = fuzzy_art_model.prepare_data(X_train_subset)
     test_X_fuzzy_art  = fuzzy_art_model.prepare_data(X_test_subset)
 
-    fuzzy_art_model.fit(train_X_fuzzy_art)
+    fuzzy_art_model.partial_fit(train_X_fuzzy_art)
     fuzzy_art_predictions = fuzzy_art_model.predict(test_X_fuzzy_art)
 
     return adjusted_rand_score(y_test_subset,fuzzy_art_predictions)
