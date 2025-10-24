@@ -2,7 +2,6 @@ from artlib import FuzzyART
 from sklearn.metrics import adjusted_rand_score
 import numpy as np
 import torch
-
 # Os limites são calculados de forma diferente quando se trata de imagens
 def train_fuzzyART_images(X_train_subset, y_train_subset, X_test_subset, y_test_subset, n_dim):
     fuzzy_art_model = FuzzyART(rho=0.3, alpha=0.0, beta=1.0)

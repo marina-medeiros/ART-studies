@@ -7,6 +7,13 @@ import torch
 def train_fuzzyARTMAP_images(X_train_subset, y_train_subset, X_test_subset, y_test_subset, n_dim):
     fuzzy_artmap_model = FuzzyARTMAP(rho=0.3, alpha=0.0, beta=1.0)
 
+    # 🔧 Conversão para numpy
+    X_train_subset = X_train_subset.numpy() if isinstance(X_train_subset, torch.Tensor) else X_train_subset
+    y_train_subset = y_train_subset.numpy() if isinstance(y_train_subset, torch.Tensor) else y_train_subset
+    X_test_subset = X_test_subset.numpy() if isinstance(X_test_subset, torch.Tensor) else X_test_subset
+    y_test_subset = y_test_subset.numpy() if isinstance(y_test_subset, torch.Tensor) else y_test_subset
+
+
     lower_bounds = np.zeros(n_dim)
     upper_bounds = np.full(n_dim, 255.0)
     fuzzy_artmap_model.module_a.set_data_bounds(lower_bounds, upper_bounds)
@@ -14,8 +21,8 @@ def train_fuzzyARTMAP_images(X_train_subset, y_train_subset, X_test_subset, y_te
     train_X_fuzzy_artmap = fuzzy_artmap_model.prepare_data(X_train_subset)
     test_X_fuzzy_artmap  = fuzzy_artmap_model.prepare_data(X_test_subset)
 
-    fuzzy_artmap_model.fit(train_X_fuzzy_artmap, y_train_subset)
-    fuzzy_artmap_predictions = fuzzy_artmap_model.predict(test_X_fuzzy_artmap, y_test_subset)
+    fuzzy_artmap_model.partial_fit(train_X_fuzzy_artmap, y_train_subset)
+    fuzzy_artmap_predictions = fuzzy_artmap_model.predict(test_X_fuzzy_artmap)
 
     return accuracy_score(y_test_subset,fuzzy_artmap_predictions)
 
@@ -29,8 +36,8 @@ def train_fuzzyARTMAP(X_train_subset, y_train_subset, X_test_subset, y_test_subs
     train_X_fuzzy_artmap = fuzzy_artmap_model.prepare_data(X_train_subset)
     test_X_fuzzy_artmap  = fuzzy_artmap_model.prepare_data(X_test_subset)
 
-    fuzzy_artmap_model.fit(train_X_fuzzy_artmap, y_train_subset)
-    fuzzy_artmap_predictions = fuzzy_artmap_model.predict(test_X_fuzzy_artmap, y_test_subset)
+    fuzzy_artmap_model.partial_fit(train_X_fuzzy_artmap, y_train_subset)
+    fuzzy_artmap_predictions = fuzzy_artmap_model.predict(test_X_fuzzy_artmap)
 
     return accuracy_score(y_test_subset,fuzzy_artmap_predictions)
 
@@ -59,6 +66,10 @@ def generate_acc_matrix_fuzzyARTMAP(num_tasks, X_train_sorted, y_train_sorted, X
             # Armazena os subconjuntos (opcional)
             train_subsets.append((X_train_subset, y_train_subset))
             test_subsets.append((X_test_subset, y_test_subset))
+
+            if X_train_subset.shape[0] == 0 or X_test_subset.shape[0] == 0:
+                acc_matrix[i][j] = 0.0 # ou 0.0, dependendo do que quiser preencher
+                continue
 
             if(images):
                 acc_matrix[i][j] = train_fuzzyARTMAP_images(
