@@ -14,8 +14,8 @@ def train_fuzzyARTMAP_images(X_train_subset, y_train_subset, X_test_subset, y_te
     train_X_fuzzy_artmap = fuzzy_artmap_model.prepare_data(X_train_subset)
     test_X_fuzzy_artmap  = fuzzy_artmap_model.prepare_data(X_test_subset)
 
-    fuzzy_artmap_model.fit(train_X_fuzzy_artmap)
-    fuzzy_artmap_predictions = fuzzy_artmap_model.predict(test_X_fuzzy_artmap)
+    fuzzy_artmap_model.fit(train_X_fuzzy_artmap, y_train_subset)
+    fuzzy_artmap_predictions = fuzzy_artmap_model.predict(test_X_fuzzy_artmap, y_test_subset)
 
     return accuracy_score(y_test_subset,fuzzy_artmap_predictions)
 
@@ -29,8 +29,8 @@ def train_fuzzyARTMAP(X_train_subset, y_train_subset, X_test_subset, y_test_subs
     train_X_fuzzy_artmap = fuzzy_artmap_model.prepare_data(X_train_subset)
     test_X_fuzzy_artmap  = fuzzy_artmap_model.prepare_data(X_test_subset)
 
-    fuzzy_artmap_model.fit(train_X_fuzzy_artmap)
-    fuzzy_artmap_predictions = fuzzy_artmap_model.predict(test_X_fuzzy_artmap)
+    fuzzy_artmap_model.fit(train_X_fuzzy_artmap, y_train_subset)
+    fuzzy_artmap_predictions = fuzzy_artmap_model.predict(test_X_fuzzy_artmap, y_test_subset)
 
     return accuracy_score(y_test_subset,fuzzy_artmap_predictions)
 
