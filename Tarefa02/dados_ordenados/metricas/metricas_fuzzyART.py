@@ -84,3 +84,5 @@ def generate_acc_matrix_fuzzyART(num_tasks, X_train_sorted, y_train_sorted, X_te
                                     y_test_subset)
             
     return acc_matrix
+
+#ajustar para não criar o mesmo modelo várias vezes
