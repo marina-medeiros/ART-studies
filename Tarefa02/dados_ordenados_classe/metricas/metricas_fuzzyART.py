@@ -2,44 +2,23 @@ from artlib import FuzzyART
 from sklearn.metrics import adjusted_rand_score
 import numpy as np
 import torch
-# Os limites são calculados de forma diferente quando se trata de imagens
-def train_fuzzyART_images(X_train_subset, y_train_subset, X_test_subset, y_test_subset, n_dim):
-    fuzzy_art_model = FuzzyART(rho=0.3, alpha=0.0, beta=1.0)
-
-    lower_bounds = np.zeros(n_dim)
-    upper_bounds = np.full(n_dim, 255.0)
-    fuzzy_art_model.set_data_bounds(lower_bounds, upper_bounds)
-
-    train_X_fuzzy_art = fuzzy_art_model.prepare_data(X_train_subset)
-    test_X_fuzzy_art  = fuzzy_art_model.prepare_data(X_test_subset)
-
-    fuzzy_art_model.partial_fit(train_X_fuzzy_art)
-    fuzzy_art_predictions = fuzzy_art_model.predict(test_X_fuzzy_art)
-
-    return adjusted_rand_score(y_test_subset,fuzzy_art_predictions)
-
-
-def train_fuzzyART(X_train_subset, y_train_subset, X_test_subset, y_test_subset):
-    fuzzy_art_model = FuzzyART(rho=0.3, alpha=0.0, beta=1.0)
-
-    X_combined = np.concatenate([X_train_subset, X_test_subset], axis=0)
-    lower_bound, upper_bound = fuzzy_art_model.find_data_bounds(X_combined)
-    fuzzy_art_model.set_data_bounds(lower_bound, upper_bound)
-
-    train_X_fuzzy_art = fuzzy_art_model.prepare_data(X_train_subset)
-    test_X_fuzzy_art  = fuzzy_art_model.prepare_data(X_test_subset)
-
-    fuzzy_art_model.partial_fit(train_X_fuzzy_art)
-    fuzzy_art_predictions = fuzzy_art_model.predict(test_X_fuzzy_art)
-
-    return adjusted_rand_score(y_test_subset,fuzzy_art_predictions)
-
 
 def generate_acc_matrix_fuzzyART(num_tasks, X_train_sorted, y_train_sorted, X_test_sorted, y_test_sorted, images):
     train_subsets = []
     test_subsets = []
 
     acc_matrix = [[0 for _ in range(num_tasks)] for _ in range(num_tasks)]
+
+    fuzzy_art_model = FuzzyART(rho=0.1, alpha=0.0, beta=1.0)
+
+    if(images):
+        lower_bounds = np.zeros(16*16)
+        upper_bounds = np.full(16*16, 255.0)
+        fuzzy_art_model.set_data_bounds(lower_bounds, upper_bounds)
+    else:
+        X_combined = np.concatenate([X_train_subset, X_test_subset], axis=0)
+        lower_bound, upper_bound = fuzzy_art_model.find_data_bounds(X_combined)
+        fuzzy_art_model.set_data_bounds(lower_bound, upper_bound)
 
     for i in range(num_tasks):
         for j in range(num_tasks):
@@ -60,29 +39,17 @@ def generate_acc_matrix_fuzzyART(num_tasks, X_train_sorted, y_train_sorted, X_te
             train_subsets.append((X_train_subset, y_train_subset))
             test_subsets.append((X_test_subset, y_test_subset))
 
-            print(f"Classes de treino: {torch.unique(y_train_subset)}")
-            print(f"Classes de teste: {torch.unique(y_test_subset)}")
-            print(f"Tarefa {i}, Teste classe {j}, Tamanho do treino: {len(X_train_subset)}, Tamanho do teste: {len(X_test_subset)}")
-
             if len(X_train_subset) == 0 or len(X_test_subset) == 0:
                 print("Problema: subconjunto de dados vazio")
                 acc_matrix[i][j] = 0.0
                 continue
+        
+            train_X_fuzzy_art = fuzzy_art_model.prepare_data(X_train_subset)
+            test_X_fuzzy_art  = fuzzy_art_model.prepare_data(X_test_subset)
 
-            if(images):
-                acc_matrix[i][j] = train_fuzzyART_images(
-                                    X_train_subset,
-                                    y_train_subset,  # não é usado na função
-                                    X_test_subset,
-                                    y_test_subset, 
-                                    16 * 16)
-            else:
-                acc_matrix[i][j] = train_fuzzyART(
-                                    X_train_subset,
-                                    y_train_subset,  # não é usado na função
-                                    X_test_subset,
-                                    y_test_subset)
-            
+            fuzzy_art_model.partial_fit(train_X_fuzzy_art)
+            fuzzy_art_predictions = fuzzy_art_model.predict(test_X_fuzzy_art)
+
+            acc_matrix[i][j] = adjusted_rand_score(y_test_subset, fuzzy_art_predictions)
+
     return acc_matrix
-
-#ajustar para não criar o mesmo modelo várias vezes
