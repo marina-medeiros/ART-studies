@@ -18,17 +18,6 @@ def backward_transfer(num_tasks, acc_matrix):
 
   return (acc_sum / denominator)
 
-# def forward_transfer(num_tasks, acc_matrix):
-#   denominator = num_tasks*(num_tasks-1)/2
-#   acc_sum = 0
-#   j = 0
-
-#   for i in range(num_tasks):
-#     for j in range(i+1, num_tasks): # mudei os ranges para que pegasse a parte superior da matriz apenas
-#       acc_sum += acc_matrix[i][j]
-
-#   return (acc_sum / denominator)
-
 def forward_transfer(num_tasks, acc_matrix):
   denominator = num_tasks*(num_tasks-1)/2
   acc_sum = 0
