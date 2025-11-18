@@ -1,1 +1,1 @@
-Neste repositório, faremos testes dos algortimos Fuzzy ART, Fuzzy ARTMAP e Fusion ARTMAP.
+Registros dos meus testes e estudos a respeito de modelos ART.
